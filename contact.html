@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact form</title>
+
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600);
+
+* {
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-font-smoothing:antialiased;
+	-moz-font-smoothing:antialiased;
+	-o-font-smoothing:antialiased;
+	font-smoothing:antialiased;
+	text-rendering:optimizeLegibility;
+}
+
+body {
+	font-family:"Open Sans", Helvetica, Arial, sans-serif;
+	font-weight:300;
+	font-size: 12px;
+	line-height:30px;
+	color:#777;
+	background:#0CF;
+}
+
+.container {
+	max-width:400px;
+	width:100%;
+	margin:0 auto;
+	position:relative;
+}
+
+#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea, #contact button[type="submit"] { font:400 12px/16px "Open Sans", Helvetica, Arial, sans-serif; }
+
+#contact {
+	background:#F9F9F9;
+	padding:25px;
+	margin:50px 0;
+}
+
+#contact h3 {
+	color: #F96;
+	display: block;
+	font-size: 30px;
+	font-weight: 400;
+}
+
+#contact h4 {
+	margin:5px 0 15px;
+	display:block;
+	font-size:13px;
+}
+
+fieldset {
+	border: medium none !important;
+	margin: 0 0 10px;
+	min-width: 100%;
+	padding: 0;
+	width: 100%;
+}
+
+#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea {
+	width:100%;
+	border:1px solid #CCC;
+	background:#FFF;
+	margin:0 0 5px;
+	padding:10px;
+}
+
+#contact input[type="text"]:hover, #contact input[type="email"]:hover, #contact input[type="tel"]:hover, #contact input[type="url"]:hover, #contact textarea:hover {
+	-webkit-transition:border-color 0.3s ease-in-out;
+	-moz-transition:border-color 0.3s ease-in-out;
+	transition:border-color 0.3s ease-in-out;
+	border:1px solid #AAA;
+}
+
+#contact textarea {
+	height:100px;
+	max-width:100%;
+  resize:none;
+}
+
+#contact button[type="submit"] {
+	cursor:pointer;
+	width:100%;
+	border:none;
+	background:#0CF;
+	color:#FFF;
+	margin:0 0 5px;
+	padding:10px;
+	font-size:15px;
+}
+
+#contact button[type="submit"]:hover {
+	background:#09C;
+	-webkit-transition:background 0.3s ease-in-out;
+	-moz-transition:background 0.3s ease-in-out;
+	transition:background-color 0.3s ease-in-out;
+}
+
+#contact button[type="submit"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
+
+#contact input:focus, #contact textarea:focus {
+	outline:0;
+	border:1px solid #999;
+}
+::-webkit-input-placeholder {
+ color:#888;
+}
+:-moz-placeholder {
+ color:#888;
+}
+::-moz-placeholder {
+ color:#888;
+}
+:-ms-input-placeholder {
+ color:#888;
+}
+
+    </style>
+
+</head>
+<body>
+    <div class="container">  
+        <form id="contact" action="" method="post">
+          <h3>Quick Contact</h3>
+          <h4>Contact us today, and get reply with in 24 hours!</h4>
+          <fieldset>
+            <input placeholder="Your name" type="text" tabindex="1" required autofocus>
+          </fieldset>
+          <fieldset>
+            <input placeholder="Your Email Address" type="email" tabindex="2" required>
+          </fieldset>
+          <fieldset>
+            <input placeholder="Your Phone Number" type="tel" tabindex="3" required>
+          </fieldset>
+          <fieldset>
+            <input placeholder="Your Web Site starts with http://" type="url" tabindex="4" required>
+          </fieldset>
+          <fieldset>
+            <textarea placeholder="Type your Message Here...." tabindex="5" required></textarea>
+          </fieldset>
+          <fieldset>
+            <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+          </fieldset>
+        </form>
+       
+        
+      </div>
+
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+       <script>
+           (function() {
+             const sessionId = Date.now().toString();
+             window.sessionId = sessionId;
+           })();
+         </script>
+       <script>
+         function generateRandomId() {
+           return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+             var r = Math.random() * 16 | 0,
+               v = c == 'x' ? r : (r & 0x3 | 0x8);
+             return v.toString(16);
+           });
+         }
+       
+         function determineStepProperties(element) {
+             let isManualStep = true;
+             let displayNextBtn = false;
+   
+             if (element.tagName.toLowerCase() === "input") {
+               // Check for relevant input types
+               const inputTypes = ["radio", "text", "checkbox", "select-multiple", "select-one", "email", "password", "tel", "number"];
+               if (inputTypes.includes(element.type)) {
+                 displayNextBtn = true; // Set to true for valid input types
+               }
+             } else if (element.tagName.toLowerCase() === "select") {
+               displayNextBtn = true; // Allow displayNextBtn for select elements
+             }
+   
+             return { isManualStep, displayNextBtn };
+           }
+         
+           document.addEventListener("DOMContentLoaded", function () {
+   
+             let interactions = [];
+             let sessionId = window.sessionId; // Generate a unique session ID
+             let userIpAddress = '';
+             let userEmail = 'preethi@yopmail.com'; // Replace with actual user email logic
+     
+             // Fetch IP address from a third-party API
+             fetch('https://api.ipify.org?format=json')
+               .then(response => response.json())
+               .then(data => {
+                 userIpAddress = data.ip;
+               })
+               .catch(error => console.error('Error fetching IP address:', error));
+         
+             function getXPath(element) {
+               let selector = '';
+               let foundRoot;
+               let currentElement = element;
+         
+               do {
+                 const tagName = currentElement.tagName.toLowerCase();
+                 const parentElement = currentElement.parentElement;
+         
+                 if (parentElement) {
+                   if (parentElement.childElementCount > 1) {
+                     const parentsChildren = [...parentElement.children];
+                     let tag = [];
+                     parentsChildren.forEach(child => {
+                       if (child.tagName.toLowerCase() === tagName) tag.push(child);
+                     });
+         
+                     if (tag.length === 1) {
+                       selector = `/${tagName}${selector}`;
+                     } else {
+                       const position = tag.indexOf(currentElement) + 1;
+                       selector = `/${tagName}[${position}]${selector}`;
+                     }
+                   } else {
+                     selector = `/${tagName}${selector}`;
+                   }
+                   currentElement = parentElement;
+                   foundRoot = parentElement.tagName.toLowerCase() === 'html';
+                 } else {
+                   selector = `/${tagName}${selector}`;
+                   foundRoot = true;
+                 }
+         
+                 if (foundRoot) selector = `/html${selector}`;
+               } while (foundRoot === false);
+         
+               return selector;
+             }
+         
+             function getCssSelector(element) {
+               if (!(element instanceof Element)) return '';
+         
+               let path = [];
+               while (element && element.nodeType === Node.ELEMENT_NODE) {
+                 let selector = element.tagName.toLowerCase();
+                 if (element.id) {
+                   selector += `#${element.id}`;
+                   path.unshift(selector);
+                   break;
+                 }
+         
+                 if (typeof element.className === 'string') {
+                   let classes = element.className.trim().split(/\s+/);
+                   if (classes.length > 0) {
+                     selector += '.' + classes.join('.');
+                   }
+                 }
+         
+                 const parent = element.parentNode;
+                 if (parent && parent.nodeType === Node.ELEMENT_NODE) {
+                   const children = Array.from(parent.children).filter(child => child.nodeType === Node.ELEMENT_NODE);
+                   const index = children.indexOf(element) + 1; // 1-based index
+         
+                   if (index > 1) {
+                     selector += `:nth-child(${index})`;
+                   }
+                 }
+                 path.unshift(selector);
+                 element = element.parentNode;
+               }
+         
+               return path.join(' > ');
+             }
+         
+             function getLabel(element) {
+               let label = element.getAttribute('aria-label') || element.title || element.alt || element.innerText;
+               if (!label && element.labels && element.labels.length > 0) {
+                 label = element.labels[0].innerText;
+               }
+               return label || '';
+             }
+   
+             async function storeLogEntry(logEntry) {
+               try {
+                 const response = await fetch(`https://api-qa.supervity.ai/botapi/storeLog`, {
+                   method: 'POST',
+                   headers: {
+                     'Content-Type': 'application/json'
+                   },
+                   body: JSON.stringify({
+                     sessionId: sessionId,
+                     interactions: [logEntry],
+                     ipAddress: userIpAddress,
+                     userEmail: userEmail
+                   })
+                 });
+   
+                 if (!response.ok) {
+                   throw new Error(`Error storing log entry: ${response.statusText}`);
+                 }
+   
+                 const data = await response.json();
+                 console.log('Log entries stored:', data);
+               } catch (error) {
+                 console.error('Error storing log entries:', error);
+                 throw error;
+               }
+             }
+            
+             function logClick(event) {
+               let element = event.target;
+               let { isManualStep, displayNextBtn } = determineStepProperties(element);
+               html2canvas(document.body, {
+                 useCORS: true,
+                 allowTaint: true,
+                 width: window.innerWidth,
+                 height: window.innerHeight,
+                 scrollX: -window.scrollX,
+                 scrollY: -window.scrollY,
+                 windowWidth: document.documentElement.clientWidth,
+                 windowHeight: document.documentElement.clientHeight
+               }).then(async function (canvas) {
+                 setTimeout(async() => {
+                   let offScreenCanvas = document.createElement('canvas');
+                   offScreenCanvas.width = canvas.width;
+                   offScreenCanvas.height = canvas.height;
+                   let context = offScreenCanvas.getContext('2d');
+         
+                   context.drawImage(canvas, 0, 0);
+         
+                   let rect = element.getBoundingClientRect();
+         
+                   context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                   context.lineWidth = 2;
+                   context.strokeRect(rect.left + window.scrollX, rect.top + window.scrollY, rect.width, rect.height);
+         
+                   context.fillStyle = 'rgba(255, 255, 0, 0.1)';
+                   context.fillRect(rect.left + window.scrollX, rect.top + window.scrollY, rect.width, rect.height);
+         
+                   let imgData = offScreenCanvas.toDataURL("image/png");
+                   function capitalize(str) {
+                     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+                   }
+   
+                   let defaultDescription = capitalize(event.type);
+				   let elementLabel = getLabel(element);
+                   if (elementLabel) {
+                        defaultDescription = defaultDescription.concat(" ", elementLabel);
+                      }
+                   if (Boolean(element.innerText?.length || element.textContent?.length)) {
+                     defaultDescription = defaultDescription.concat(
+                       " ",
+                       element.innerText || element.textContent || element.value
+                     );
+                   }
+         
+                   let isInputEl = element.tagName.toLowerCase() === 'input';
+                   let logEntry = {
+                     id: generateRandomId(),
+                     type: "record",
+                     actionType: event.type,
+                     elementId: element.id,
+                     elementType: element.type,
+                     elementClass: element.className,
+                     elementName: element.tagName.toLowerCase(),
+                     value: element.value,
+                     xPath: getXPath(element),
+                     inputLabel: element.name,
+                     selector: getCssSelector(element),
+                     elementLabel: getLabel(element),
+                     pageScreenshot: imgData,
+                     timestamp: new Date().toISOString(),
+                     isInputEl: isInputEl,
+                     tabTitle: document.title,
+                     tabURL: window.location.href,
+                     href: window.location.href,
+                     coord: { x: rect.left + window.scrollX, y: rect.top + window.scrollY },
+                     elementTag: element.tagName.toLowerCase(),
+                     userEmail: userEmail,
+                     rawText: element.innerText || element.textContent,
+                     text: element.innerText || element.textContent,
+                     elSelector: "",
+                     isManualStep: isManualStep,
+                     displayNextBtn: displayNextBtn,
+                     description: defaultDescription,
+					 frame: window.location.href
+                   };
+         
+                   interactions.push(logEntry);
+                   console.log('Log entry:', logEntry);
+                   storeLogEntry(logEntry)
+                 }, 100);
+               
+               }).catch(error => console.error('Error capturing screenshot:', error));
+             }
+   
+             let typingTimer; // Timer identifier
+             const typingInterval = 1000; 
+             let lastLogEntry; 
+             let isTyping = false; // Flag to track if typing is in progress
+   
+             function captureScreenshot(element) {
+               return html2canvas(document.body, {
+                 useCORS: true,
+                 allowTaint: true,
+                 width: window.innerWidth,
+                 height: window.innerHeight,
+                 scrollX: -window.scrollX,
+                 scrollY: -window.scrollY,
+                 windowWidth: document.documentElement.clientWidth,
+                 windowHeight: document.documentElement.clientHeight
+               }).then(async function (canvas) {
+                 let offScreenCanvas = document.createElement('canvas');
+                 offScreenCanvas.width = canvas.width;
+                 offScreenCanvas.height = canvas.height;
+                 let context = offScreenCanvas.getContext('2d');
+   
+                 context.drawImage(canvas, 0, 0);
+   
+                 // Draw a rectangle around the focused element
+                 let rect = element.getBoundingClientRect();
+                 context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                 context.lineWidth = 2;
+                 context.strokeRect(rect.left + window.scrollX, rect.top + window.scrollY, rect.width, rect.height);
+   
+                 context.fillStyle = 'rgba(255, 255, 0, 0.1)';
+                 context.fillRect(rect.left + window.scrollX, rect.top + window.scrollY, rect.width, rect.height);
+   
+                 return offScreenCanvas.toDataURL("image/png");
+               }).catch(error => console.error('Error capturing screenshot:', error));
+             }
+   
+                  function logTyping(element) {
+    let { isManualStep, displayNextBtn } = determineStepProperties(element);
+    let isInputEl = element.tagName.toLowerCase() === 'input';
+    lastLogEntry = {
+      id: generateRandomId(),
+      type: 'record',
+      actionType: "type",
+      elementClass: element.className,
+      elementName: element.tagName.toLowerCase(),
+      elementType: element.type,
+      value: element.value,
+      xPath: getXPath(element),
+      inputLabel: element.name,
+      selector: getCssSelector(element),
+      elementLabel: getLabel(element),
+      isInputEl: isInputEl,
+      timestamp: new Date().toISOString(),
+      tabTitle: document.title,
+      tabURL: window.location.href,
+      rawText: element.innerText || element.textContent,
+      elementTag: element.tagName.toLowerCase(),
+      userEmail: userEmail,
+      href: window.location.href,
+      text: element.innerText || element.textContent,
+      elSelector: "",
+      isManualStep: isManualStep,
+      displayNextBtn: displayNextBtn,
+      description: "Type " + element.value
+    };
+  }
+
+  function handleInputBlur(event) {
+    let element = event.target; // Get the current element
+    if (element.matches('input, textarea, select')) {
+      logTyping(element);
+      captureScreenshot(element).then(imgData => {
+        lastLogEntry.pageScreenshot = imgData; // Update the screenshot in the last log entry
+        storeLogEntry(lastLogEntry); // Store the log entry when user stops typing
+        console.log('Final Log entry stored:', lastLogEntry);
+      });
+    }
+  }
+
+  document.addEventListener('focusin', function (event) {
+    if (event.target.matches('input, textarea, select')) {
+      // Remove previous event listeners if any
+      event.target.removeEventListener('blur', handleInputBlur);
+      // Add blur event listener to log entry when focus is lost
+      event.target.addEventListener('blur', handleInputBlur);
+    }
+  }, true);
+
+  document.addEventListener('click', logClick, true);
+  document.addEventListener('contextmenu', logClick, true);
+});
+         </script>
+
+</body>
+</html>
